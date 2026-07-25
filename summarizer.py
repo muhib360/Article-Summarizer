@@ -1,18 +1,18 @@
 from openai import OpenAI
 from trafilatura import fetch_url, extract
 from models import Summary
-from config import OPEN_ROUTER_KEY, MODEL_BASE_URL, MODEL_NAME
+from .settings import model_settings
 
 class ArticleSummarizer:
     def __init__(self):
         self.client = OpenAI(
-            api_key=OPEN_ROUTER_KEY,
-            base_url=MODEL_BASE_URL
+            api_key=model_settings.open_router_key,
+            base_url=model_settings.model_base_url
         )
 
     def summarize(self, article_text: str) -> Summary:
         response = self.client.chat.completions.parse(
-            model=MODEL_NAME,
+            model=model_settings.model_name,
             messages=[
                 {"role": "system", "content": """Summarize the article.
 Return:
@@ -29,4 +29,7 @@ Return:
             ],
             response_format=Summary
         )
-        return response.choices[0].message.parsed
+        parsed = response.choices[0].message.parsed
+        if parsed is None:
+            raise ValueError("Failed to parse the model response into a Summary.")
+        return parsed

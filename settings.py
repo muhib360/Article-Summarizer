@@ -10,5 +10,7 @@ class Model_Settings(Settings):
 
 model_settings = Model_Settings()  # pyright: ignore[reportCallIssue]
 
-class Database_Settings(BaseSettings):
+class Database_Settings(Settings):
     db_url: str
+
+db_settings = Database_Settings()  # pyright: ignore[reportCallIssue]
