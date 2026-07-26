@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from collections.abc import AsyncGenerator
 from sqlalchemy.orm import DeclarativeBase
-from ..settings import db_settings
+from settings import db_settings
 
 class Base(DeclarativeBase):
     pass

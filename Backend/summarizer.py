@@ -1,7 +1,7 @@
 from openai import OpenAI
 from trafilatura import fetch_url, extract
-from .models import Summary
-from .settings import model_settings
+from models import Summary
+from settings import model_settings
 
 class ArticleSummarizer:
     def __init__(self):
