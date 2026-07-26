@@ -28,9 +28,10 @@ target_metadata = Base.metadata
 # ---------------------------------------------------------------------------
 # Inject the DB URL from settings so we never hardcode credentials here
 # ---------------------------------------------------------------------------
+# db_url is read directly from settings to avoid configparser
+# interpolation issues with %-encoded characters in the URL
 from settings import db_settings
-
-config.set_main_option("sqlalchemy.url", db_settings.db_url)
+db_url = db_settings.db_url
 
 
 # ---------------------------------------------------------------------------
@@ -38,9 +39,8 @@ config.set_main_option("sqlalchemy.url", db_settings.db_url)
 # ---------------------------------------------------------------------------
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode (generates SQL scripts)."""
-    url = config.get_main_option("sqlalchemy.url")
     context.configure(
-        url=url,
+        url=db_url,
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
@@ -70,6 +70,7 @@ async def run_migrations_online() -> None:
         config.get_section(config.config_ini_section, {}),
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,   # no connection pool for migrations
+        url=db_url,
     )
 
     async with connectable.connect() as connection:
