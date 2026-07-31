@@ -1,16 +1,19 @@
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSONB
-from sqlalchemy import ForeignKey, String
+from sqlalchemy import ForeignKey, String, DateTime, func
 from typing import Any
 from db.db import Base
 import uuid
+from datetime import datetime
 
 class Article(Base):
     __tablename__ = "article"
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    source_url: Mapped[str] = mapped_column(nullable=False)
     title: Mapped[str] = mapped_column(nullable=False)
     bullet_points: Mapped[list[str]] = mapped_column(ARRAY(String), nullable=False)
     tldr: Mapped[str] = mapped_column(nullable=False)
     additional_info: Mapped[dict[str, Any] | None] = mapped_column(JSONB, nullable=True)
+    saved_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
     user: Mapped["User"] = relationship(back_populates="articles")  # type: ignore[name-defined]
