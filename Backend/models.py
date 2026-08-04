@@ -15,7 +15,6 @@ class SaveBlogRequest(BaseModel):
     bullet_points: list[str]
     tldr: str
     additional_info: dict[str, Any] | None = None
-    user_id: uuid.UUID
 
 class SavedBlogResponse(BaseModel):
     model_config = {"from_attributes": True}
@@ -37,3 +36,11 @@ class SavedBlogListItem(BaseModel):
     title: str
     tldr: str
     saved_at: datetime
+
+class UserResponse(BaseModel):
+    model_config = {"from_attributes": True}
+
+    id: uuid.UUID
+    firebase_uid: str
+    username: str | None
+    email: str

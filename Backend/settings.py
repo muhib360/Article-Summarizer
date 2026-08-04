@@ -14,3 +14,8 @@ class Database_Settings(Settings):
     db_url: str
 
 db_settings = Database_Settings()  # pyright: ignore[reportCallIssue]
+
+class Firebase_Settings(Settings):
+    firebase_service_account_path: str = "firebase-service-account.json"
+
+firebase_settings = Firebase_Settings()  # pyright: ignore[reportCallIssue]
