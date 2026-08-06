@@ -42,5 +42,5 @@ class UserResponse(BaseModel):
 
     id: uuid.UUID
     firebase_uid: str
-    username: str | None
+    display_name: str | None
     email: str

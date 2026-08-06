@@ -37,15 +37,22 @@ async def sync_user(
     email: str = decoded_token.get("email", "")
     display_name: str | None = decoded_token.get("name")
 
-    # Check if user already exists
+    # Check if user already exists by firebase_uid or email
     result = await db.execute(
         select(User).where(User.firebase_uid == firebase_uid)
     )
     user = result.scalars().first()
 
+    if not user and email:
+        result = await db.execute(
+            select(User).where(User.email == email)
+        )
+        user = result.scalars().first()
+
     if user:
+        user.firebase_uid = firebase_uid
         user.email = email
-        user.username = display_name
+        user.display_name = display_name
         await db.commit()
         await db.refresh(user)
         return user
@@ -54,7 +61,7 @@ async def sync_user(
     user = User(
         firebase_uid=firebase_uid,
         email=email,
-        username=display_name,
+        display_name=display_name,
     )
     db.add(user)
     await db.commit()
